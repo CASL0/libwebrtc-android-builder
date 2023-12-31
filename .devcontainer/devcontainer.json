@@ -8,8 +8,15 @@
   "customizations": {
     "vscode": {
       "extensions": [
-        "ms-vscode.cpptools-extension-pack"
-      ]
+        "ms-vscode.cpptools-extension-pack",
+        "esbenp.prettier-vscode"
+      ],
+      "settings": {
+        "editor.formatOnSave": true,
+        "[markdown]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        }
+      }
     }
   },
   "workspaceMount": "source=${localWorkspaceFolder},target=/usr/local/src/webrtc,type=bind,consistency=delegated",
