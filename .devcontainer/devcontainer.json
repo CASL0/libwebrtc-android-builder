@@ -4,16 +4,23 @@
   "name": "WebRTC Android Builder",
   // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
   "image": "mcr.microsoft.com/devcontainers/base:jammy",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {},
+    "ghcr.io/devcontainers/features/aws-cli:1": {}
+  },
   // Configure tool-specific properties.
   "customizations": {
     "vscode": {
       "extensions": [
         "ms-vscode.cpptools-extension-pack",
-        "esbenp.prettier-vscode"
+        "esbenp.prettier-vscode",
+        "dbaeumer.vscode-eslint"
       ],
       "settings": {
         "editor.formatOnSave": true,
-        "[markdown]": {
+        "prettier.singleQuote": true,
+        "prettier.trailingComma": "all",
+        "[markdown,Typescript]": {
           "editor.defaultFormatter": "esbenp.prettier-vscode"
         }
       }
@@ -22,6 +29,9 @@
   "workspaceMount": "source=${localWorkspaceFolder},target=/usr/local/src/webrtc,type=bind,consistency=delegated",
   "workspaceFolder": "/usr/local/src/webrtc",
   "remoteEnv": {
-    "PATH": "${containerEnv:PATH}:/usr/local/src/webrtc/depot_tools"
+    "PATH": "${containerEnv:PATH}:/usr/local/src/webrtc/depot_tools",
+    "AWS_ACCESS_KEY_ID": "${localEnv:AWS_ACCESS_KEY_ID}",
+    "AWS_SECRET_ACCESS_KEY": "${localEnv:AWS_SECRET_ACCESS_KEY}",
+    "AWS_DEFAULT_REGION": "${localEnv:AWS_DEFAULT_REGION}"
   }
 }
