@@ -1,14 +1,42 @@
-# Welcome to your CDK TypeScript project
+# WebRTC ビルド用の EC2 構築
 
-This is a blank project for CDK development with TypeScript.
+libwebrtc.aar ビルド用の EC2 インスタンスを構築します。
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+## Getting Started
 
-## Useful commands
+以下の環境変数を設定してください。
 
-* `npm run build`   compile typescript to js
-* `npm run watch`   watch for changes and compile
-* `npm run test`    perform the jest unit tests
-* `npx cdk deploy`  deploy this stack to your default AWS account/region
-* `npx cdk diff`    compare deployed stack with current state
-* `npx cdk synth`   emits the synthesized CloudFormation template
+- AWS_ACCESS_KEY_ID
+- AWS_SECRET_ACCESS_KEY
+- AWS_DEFAULT_REGION
+
+Dev Container で本リポジトリを開き、次のコマンドを実行してください。
+
+```sh
+cd ec2
+# EC2キーペアの作成
+aws ec2 create-key-pair --key-name webrtc-android-builder --query 'KeyMaterial' --key-type 'ed25519' --output text > webrtc-android-builder.pem
+yarn install
+npx cdk bootstrap
+# 作成したキーペア名を指定します
+npx cdk deploy -c keyPairName='webrtc-android-builder'
+```
+
+## 詳細
+
+次の内容を構築します。
+
+- AMI
+  - Ubuntu Server 22.04 LTS
+- インスタンスタイプ
+  - T2.Xlarge
+- ストレージ
+  - 50GiB
+- セキュリティグループ
+  - アウトバウンドと 22 番ポートのインバウンドを許可
+- VPC
+- UserData
+  - depot_tools の依存パッケージのインストール
+    - git
+    - python3
+    - curl
