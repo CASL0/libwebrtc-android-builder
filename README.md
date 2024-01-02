@@ -16,3 +16,9 @@ cd src && ./build/install-build-deps.sh
 # git checkout branch-heads/6099
 tools_webrtc/android/build_aar.py
 ```
+
+## EC2 構築
+
+ビルド用の EC2 インスタンスを CDK で構築します。
+
+構築方法については[ec2](./ec2/)を参照してください。
