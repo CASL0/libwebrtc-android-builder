@@ -1,0 +1,79 @@
+name: 'Build & Publish package to GitHub Packages'
+on:
+  workflow_dispatch:
+    inputs:
+      webrtc_branch:
+        type: string
+        required: true
+        description: 'WebRTCブランチ'
+        default: 'master'
+
+env:
+  AAR_PATH: src/libwebrtc.aar
+
+jobs:
+  build:
+    runs-on: self-hosted
+    outputs:
+      revision: ${{ steps.revision.outputs.revision }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: 'true'
+
+      - name: Build
+        run: |
+          export PATH="$PATH:$GITHUB_WORKSPACE/depot_tools"
+          fetch --nohooks webrtc_android
+          gclient sync
+          cd src && ./build/install-build-deps.sh
+          git checkout ${{ github.event.inputs.webrtc_branch }}
+          tools_webrtc/android/build_aar.py
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: aar
+          path: ${{ env.AAR_PATH }}
+
+      - name: Save revision
+        id: revision
+        run: |
+          cd src
+          echo "revision=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    needs: build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: aar
+          path: ${{ github.workspace }}
+
+      - name: Set up Java for publishing to GitHub Packages
+        uses: actions/setup-java@v4
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+
+      - name: Publish to GitHub Packages
+        run: |
+          mvn --batch-mode deploy:deploy-file \
+           -Dfile=libwebrtc.aar \
+           -DrepositoryId=github \
+           -Durl=https://maven.pkg.github.com/CASL0/libwebrtc-android-builder \
+           -DartifactId=webrtc-android \
+           -DgroupId=com.github.casl0 \
+           -Dversion=${{ env.REVISION }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REVISION: ${{ needs.build.outputs.revision }}
