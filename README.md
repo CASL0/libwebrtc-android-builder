@@ -1,5 +1,7 @@
 # libwebrtc-android-builder
 
+[![Build & Publish package to GitHub Packages](https://github.com/CASL0/libwebrtc-android-builder/actions/workflows/publish.yaml/badge.svg)](https://github.com/CASL0/libwebrtc-android-builder/actions/workflows/publish.yaml)
+
 libwebrtc.aar をビルドします。
 
 ## Getting Started
@@ -22,3 +24,5 @@ tools_webrtc/android/build_aar.py
 ビルド用の EC2 インスタンスを CDK で構築します。
 
 構築方法については[ec2](./ec2/)を参照してください。
+
+![infra](https://github.com/CASL0/libwebrtc-android-builder/assets/28913760/11dd6e33-e446-4f27-a4ea-d44415b08435)
