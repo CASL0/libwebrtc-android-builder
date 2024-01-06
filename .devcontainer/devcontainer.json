@@ -14,7 +14,8 @@
       "extensions": [
         "ms-vscode.cpptools-extension-pack",
         "esbenp.prettier-vscode",
-        "dbaeumer.vscode-eslint"
+        "dbaeumer.vscode-eslint",
+        "hediet.vscode-drawio"
       ],
       "settings": {
         "editor.formatOnSave": true,
