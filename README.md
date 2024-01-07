@@ -19,6 +19,68 @@ cd src && ./build/install-build-deps.sh
 tools_webrtc/android/build_aar.py
 ```
 
+## Usage
+
+スナップショットリリースを Github Packages より配布しています。ビルドした成果物は以下の手順で利用可能です。
+
+1. Github Packages のリポジトリを Gradle の dependencyResolutionManagement に追加します。
+   <details open>
+   <summary>Kotlin DSL</summary>
+
+   ```kotlin
+   repositories {
+       maven {
+           url = uri("https://maven.pkg.github.com/CASL0/libwebrtc-android-builder")
+           credentials {
+               username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
+               password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
+           }
+       }
+   }
+   ```
+
+   </details>
+   <details>
+   <summary>Groovy</summary>
+
+   ```groovy
+   repositories {
+       maven {
+           url = uri("https://maven.pkg.github.com/CASL0/libwebrtc-android-builder")
+           credentials {
+               username = project.findProperty("gpr.user") as String? ?: System.getenv("USERNAME")
+               password = project.findProperty("gpr.key") as String? ?: System.getenv("TOKEN")
+           }
+       }
+   }
+   ```
+
+   </details>
+
+1. Gradle のパッケージ dependencies に本パッケージの成果物を追加してください。
+      <details open>
+      <summary>Kotlin DSL</summary>
+
+   ```kotlin
+   dependencies {
+       implementation("com.github.casl0:webrtc-android:<version>")
+   }
+   ```
+
+      </details>
+      <details>
+      <summary>Groovy</summary>
+
+   ```groovy
+   dependencies {
+       implementation "com.github.casl0:webrtc-android:<version>"
+   }
+   ```
+
+      </details>
+
+[Authenticating to GitHub Packages](https://docs.github.com/en/packages/learn-github-packages/introduction-to-github-packages#authenticating-to-github-packages)もご覧ください。
+
 ## EC2 構築
 
 ビルド用の EC2 インスタンスを CDK で構築します。
